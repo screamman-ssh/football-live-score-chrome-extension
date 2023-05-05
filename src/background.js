@@ -25,7 +25,7 @@ const leagueBox = (data) => {
                             </td>
                             <td style="width: 24%; text-align: center;">
                                 <a class="label" href="${m.match_link}"  target="_blank" rel="noopener noreferrer" style="margin-bottom: 0; margin-top: 0.8em;font-size: 1.5em;">${m.home_score + " - " + m.away_score}</a>
-                                <p class="label" style="margin: 0; color: forestgreen;">45'</p>
+                                <p class="label" style="margin: 0; color: forestgreen;">${m.time}</p>
                             </td>
                             <td style="width: 38%; text-align: center;">
                             <img src="${m.away_logo}" style="width: 40%;">
