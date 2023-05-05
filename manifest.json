@@ -1,0 +1,15 @@
+{
+    "manifest_version": 3,
+    "name": "Live Scores",
+    "description": "Organizes your Chrome extension and Chrome Web store documentation tabs.",
+    "version": "1.0",
+    "icons": {
+      "16": "./app-icon.png",
+      "32": "./app-icon.png",
+      "48": "./app-icon.png",
+      "128": "./app-icon.png"
+    },
+    "action": {
+      "default_popup": "popup.html"
+    }
+  }
