@@ -22,7 +22,7 @@ const leagueBox = (data) => {
                                 <a class="label">${m.home}</a>
                             </td>
                             <td style="width: 24%; text-align: center;">
-                                <a class="label" style="margin-bottom: 0; margin-top: 0.8em;font-size: 1.5em;">${m.home_score + " - " + m.away_score}</a>
+                                <a class="label" href="${m.match_link}"  target="_blank" rel="noopener noreferrer" style="margin-bottom: 0; margin-top: 0.8em;font-size: 1.5em;">${m.home_score + " - " + m.away_score}</a>
                                 <p class="label" style="margin: 0; color: forestgreen;">45'</p>
                             </td>
                             <td style="width: 38%; text-align: center;">
@@ -36,12 +36,13 @@ const leagueBox = (data) => {
             })}
         </div>
         `
-    }).join(" ")
+    }).join('').replaceAll("                ,", "")
 }
 
 window.onload = async function () {
     const data = JSON.parse(window.localStorage.getItem('data'))
     console.log(data)
+    console.log(leagueBox(data))
     leaguePanel.innerHTML = leagueBox(data)
     // await fecthData()
 }
