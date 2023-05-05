@@ -1,10 +1,12 @@
 // import scrapeData from "./scrape"
 // console.log(scrapeData)
+// var data = JSON.parse(window.localStorage.getItem('data'))
 var leaguePanel = document.getElementById('league-panel')
 const fecthData = async () => {
-    const data = await fetch('http://localhost:5000/get-data').then((res) => res.json())
-    window.localStorage.setItem('data', JSON.stringify(data))
-    console.log(data)
+    const data = await fetch('http://localhost:5000/get-data').then((res) => res.json());
+    const preload = {data: data, timestamp: new Date()}
+    window.localStorage.setItem('data', JSON.stringify(preload));
+    return data;
 }
 
 const leagueBox = (data) => {
@@ -19,7 +21,7 @@ const leagueBox = (data) => {
                         <tr>
                             <td style="width: 38%; text-align: center;">
                                 <img src="${m.home_logo}" style="width: 40%;">
-                                <a class="label">${m.home}</a>
+                                <a class="label" style="font-size: 10px;">${m.home}</a>
                             </td>
                             <td style="width: 24%; text-align: center;">
                                 <a class="label" href="${m.match_link}"  target="_blank" rel="noopener noreferrer" style="margin-bottom: 0; margin-top: 0.8em;font-size: 1.5em;">${m.home_score + " - " + m.away_score}</a>
@@ -27,7 +29,7 @@ const leagueBox = (data) => {
                             </td>
                             <td style="width: 38%; text-align: center;">
                             <img src="${m.away_logo}" style="width: 40%;">
-                            <a class="label">${m.away}</a>
+                            <a class="label" style="font-size: 10px;">${m.away}</a>
                             </td>
                         </tr>
                     </table>
@@ -40,9 +42,12 @@ const leagueBox = (data) => {
 }
 
 window.onload = async function () {
-    const data = JSON.parse(window.localStorage.getItem('data'))
-    console.log(data)
-    console.log(leagueBox(data))
-    leaguePanel.innerHTML = leagueBox(data)
+    const dataObj = JSON.parse(window.localStorage.getItem('data'));
+    leaguePanel.innerHTML = leagueBox(dataObj.data)
+    if((new Date() - new Date(dataObj.timestamp)) > 60000){
+        var newData = await fecthData()
+        leaguePanel.innerHTML = leagueBox(newData)
+    }
     // await fecthData()
 }
+
