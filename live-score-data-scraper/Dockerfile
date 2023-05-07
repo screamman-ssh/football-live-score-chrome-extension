@@ -12,6 +12,15 @@ RUN apt-get update && apt-get install gnupg wget -y && \
   apt-get install google-chrome-stable -y --no-install-recommends && \
   rm -rf /var/lib/apt/lists/*
 
+# Set timezone for images ***
+# Set TZ environment variable
+ENV TZ Asia/Bangkok
+# Install tzdata and set timezone
+RUN apt-get update && \
+    apt-get install -yq tzdata && \
+    ln -fs /usr/share/zoneinfo/${TZ} /etc/localtime && \
+    dpkg-reconfigure -f noninteractive tzdata
+
 # Create app directory
 WORKDIR /usr/src/app
 
@@ -24,4 +33,6 @@ RUN npm install
 COPY . .
 
 EXPOSE 5000
+
+
 CMD [ "node", "index.js" ]
