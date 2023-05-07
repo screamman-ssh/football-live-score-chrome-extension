@@ -24,10 +24,10 @@ app.get("/get-data", async (req, res) => {
                         time: e.querySelector('.start-date_start-date__ggx17')? e.querySelector('.start-date_start-date__ggx17').innerText : e.querySelector('.period_period__OUtPk') ?  e.querySelector('.period_period__OUtPk').innerText : e.querySelector('.full-time_full-time__RAWhq') ? "FT" : "HT",
                         home: e.querySelector('.team_team___lVK_.team_team-a__2YS_9 .name_name__YzgHa').innerText,
                         home_logo: e.querySelector('.team_team___lVK_.team_team-a__2YS_9 .crest_crest__CNBqh').getAttribute('src'),
-                        home_score: e.querySelector('.result_score__Dh4zx .result_team-a__A4z1T')?.innerText,
+                        home_score: e.querySelector('.result_score__Dh4zx .result_team-a__A4z1T') ? e.querySelector('.result_score__Dh4zx .result_team-a__A4z1T').innerText: "",
                         away: e.querySelector('.team_team___lVK_.team_team-b__YaeU1 .name_name__YzgHa').innerText,
                         away_logo: e.querySelector('.team_team___lVK_.team_team-b__YaeU1 .crest_crest__CNBqh').getAttribute('src'),
-                        away_score: e.querySelector('.result_score__Dh4zx .result_team-b__SPZhO')?.innerText,
+                        away_score: e.querySelector('.result_score__Dh4zx .result_team-b__SPZhO')? e.querySelector('.result_score__Dh4zx .result_team-b__SPZhO').innerText: "",
                     }))
                 }))
             );
