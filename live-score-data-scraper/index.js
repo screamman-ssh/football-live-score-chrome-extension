@@ -17,7 +17,8 @@ app.get("/get-data", async (req, res) => {
         await page.waitForSelector('.competition_name__YEMb_');
         const data = await page.evaluate(()=>
                 Array.from(document.querySelectorAll('.competition_competition__s2ULZ'), e => ({
-                    league: e.querySelector('.competition_name__YEMb_').innerText.split(' - ')[1],
+                    league: e.querySelector('.competition_name__YEMb_').innerText,
+                    league_link: e.querySelector('.competition_name__YEMb_').href,
                     league_logo: e.querySelector('.competition_logo-wrapper__WNYqb .competition_logo__1QOg2').getAttribute('src'),
                     match: Array.from(e.querySelectorAll('.row_row__UQmGm'), e => ({
                         match_link: e.href,

@@ -1,7 +1,8 @@
 var leaguePanel = document.getElementById('league-panel')
 
 const fecthData = async () => {
-    const data = await fetch('http://localhost:5000/get-data').then((res) => res.json());
+    var data = await fetch('http://localhost:5000/get-data').then((res) => res.json());
+    data = data.slice(0, 20)
     const preload = {data: data, timestamp: new Date()}
     window.localStorage.setItem('data', JSON.stringify(preload));
     return data;
@@ -11,7 +12,7 @@ const leagueBox = (data) => {
     return data.map((d) => {
         return `
         <div class="league-box" style="padding: 8px; margin-top:0.5em; background-color: rgb(29, 29, 29); border-radius: 4px;">
-            <a class="label" href="https://www.goal.com/en/premier-league/fixtures-results/2kwbbcootiqqgmrzs6o5inle5" target="_blank" rel="noopener noreferrer" style="color:white; font-size: 1.3em; margin: 0;">${d.league}</a>
+            <a class="label" href="${d.league_link}" target="_blank" rel="noopener noreferrer" style="color:white; font-size: 1.3em; margin: 0;"><img src="${d.league_logo}" style="width: 1em;"> ${d.league.split(' - ')[1]}</a>
             ${d.match.map((m) => {
                 return `
                 <div class="match-box">
@@ -51,8 +52,10 @@ window.onload = async function () {
     const d = new Date();
     if(window.localStorage.getItem('data')){
         const dataObj = JSON.parse(window.localStorage.getItem('data'));
+        leaguePanel.innerHTML = leagueBox(dataObj.data);
         //refetch data if the last fetch data are older than 30 second
-        leaguePanel.innerHTML = (new Date() - new Date(dataObj.timestamp)) > 30000 ? leagueBox(await fecthData()) : leagueBox(dataObj.data);
+        if((new Date() - new Date(dataObj.timestamp)) > 30000)
+            leaguePanel.innerHTML =  leagueBox(await fecthData());
     }else{
         leaguePanel.innerHTML = loadingLabel()
         var newData = await fecthData()
