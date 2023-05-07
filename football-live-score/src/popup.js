@@ -2,15 +2,20 @@ const moreButton = document.getElementById('more-button');
 var leaguePanel = document.getElementById('league-panel');
 var offset = 20;
 
+const local = {
+    getDataObj : () => JSON.parse(window.localStorage.getItem('data')),
+    setDataObj : (preload) => window.localStorage.setItem('data', JSON.stringify(preload)),
+}
+
 const fecthData = async () => {
-    var data = await fetch('http://localhost:5000/get-data').then((res) => res.json());
+    var data = await fetch('http://localhost:4231/get-data').then((res) => res.json());
     const preload = {data: data, timestamp: new Date()}
-    window.localStorage.setItem('data', JSON.stringify(preload));
+    local.setDataObj(preload);
     return data;
 }
 
 moreButton.addEventListener('click', function() {
-    const data = JSON.parse(window.localStorage.getItem('data')).data;
+    const data = local.getDataObj().data;
     leaguePanel.innerHTML += leagueBox(data.slice(offset, offset + 10));
     offset += 10;
 });
@@ -58,7 +63,7 @@ const loadingLabel = () =>{
 window.onload = async function () {
     const d = new Date();
     if(window.localStorage.getItem('data')){
-        const dataObj = JSON.parse(window.localStorage.getItem('data'));
+        const dataObj = local.getDataObj();
         leaguePanel.innerHTML = leagueBox(dataObj.data.slice(0, offset));
         //refetch data if the last fetch data are older than 30 second
         if((new Date() - new Date(dataObj.timestamp)) > 30000)
@@ -68,7 +73,6 @@ window.onload = async function () {
         var newData = await fecthData()
         leaguePanel.innerHTML = leagueBox(newData.slice(0, offset))
     }
-    
 }
 
 setInterval(async function(){
