@@ -20,12 +20,27 @@
             display: block;
             text-decoration: none;
         }
+        #more-button{
+            width: 100%;
+            margin-top: 4px;
+            border: none;
+            border-radius: 5px;
+            background-color: rgb(78, 77, 77);
+            color: rgb(214, 214, 214);
+            font-weight: bold;
+        }
+        #more-button:hover{
+            background-color: rgb(182, 181, 181);
+            color: rgb(123, 123, 123);
+            transition-duration: 200ms;
+        }
     </style>
 </header>
 <body style="background-color: rgb(58, 58, 58); border: none;">
     <div class="main" style="width: 20em;height: 30em; padding: 8px; overflow-y: scroll;">
         <h2 class="label" style="margin-top: 0;">Football Matches Today</h2>
         <div id="league-panel"></div>
+        <button id="more-button">More</button>
     </div>
     <script src="./popup.js"></script>
 </body>

@@ -1,12 +1,19 @@
-var leaguePanel = document.getElementById('league-panel')
+const moreButton = document.getElementById('more-button');
+var leaguePanel = document.getElementById('league-panel');
+var offset = 20;
 
 const fecthData = async () => {
     var data = await fetch('http://localhost:5000/get-data').then((res) => res.json());
-    data = data.slice(0, 20)
     const preload = {data: data, timestamp: new Date()}
     window.localStorage.setItem('data', JSON.stringify(preload));
     return data;
 }
+
+moreButton.addEventListener('click', function() {
+    const data = JSON.parse(window.localStorage.getItem('data')).data;
+    leaguePanel.innerHTML += leagueBox(data.slice(offset, offset + 10));
+    offset += 10;
+});
 
 const leagueBox = (data) => {
     return data.map((d) => {
@@ -52,14 +59,14 @@ window.onload = async function () {
     const d = new Date();
     if(window.localStorage.getItem('data')){
         const dataObj = JSON.parse(window.localStorage.getItem('data'));
-        leaguePanel.innerHTML = leagueBox(dataObj.data);
+        leaguePanel.innerHTML = leagueBox(dataObj.data.slice(0, offset));
         //refetch data if the last fetch data are older than 30 second
         if((new Date() - new Date(dataObj.timestamp)) > 30000)
-            leaguePanel.innerHTML =  leagueBox(await fecthData());
+            leaguePanel.innerHTML =  leagueBox((await fecthData()).slice(0, offset));
     }else{
         leaguePanel.innerHTML = loadingLabel()
         var newData = await fecthData()
-        leaguePanel.innerHTML = leagueBox(newData)
+        leaguePanel.innerHTML = leagueBox(newData.slice(0, offset))
     }
     
 }
