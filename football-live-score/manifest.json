@@ -10,6 +10,9 @@
       "128": "./app-icon.png"
     },
     "action": {
-      "default_popup": "popup.html"
+      "default_popup": "src/popup.html"
+    },
+    "background": {
+      "service_worker": "src/service_worker.js"
     }
   }

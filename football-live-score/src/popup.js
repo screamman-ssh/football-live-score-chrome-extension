@@ -1,7 +1,5 @@
-// import scrapeData from "./scrape"
-// console.log(scrapeData)
-// var data = JSON.parse(window.localStorage.getItem('data'))
 var leaguePanel = document.getElementById('league-panel')
+
 const fecthData = async () => {
     const data = await fetch('http://localhost:5000/get-data').then((res) => res.json());
     const preload = {data: data, timestamp: new Date()}
@@ -41,13 +39,29 @@ const leagueBox = (data) => {
     }).join('').replaceAll("                ,", "")
 }
 
+const loadingLabel = () =>{
+    return `
+    <div style="text-align:center;">
+        <h3 class="label">Loading...</h3>
+    </div>
+    `
+}
+
 window.onload = async function () {
-    const dataObj = JSON.parse(window.localStorage.getItem('data'));
-    leaguePanel.innerHTML = leagueBox(dataObj.data)
-    if((new Date() - new Date(dataObj.timestamp)) > 60000){
+    const d = new Date();
+    if(window.localStorage.getItem('data')){
+        const dataObj = JSON.parse(window.localStorage.getItem('data'));
+        //refetch data if the last fetch data are older than 30 second
+        leaguePanel.innerHTML = (new Date() - new Date(dataObj.timestamp)) > 30000 ? leagueBox(await fecthData()) : leagueBox(dataObj.data);
+    }else{
+        leaguePanel.innerHTML = loadingLabel()
         var newData = await fecthData()
         leaguePanel.innerHTML = leagueBox(newData)
     }
-    // await fecthData()
+    
 }
 
+setInterval(async function(){
+    const data = await fecthData()
+    leaguePanel.innerHTML = leagueBox(data)
+}, 60000)

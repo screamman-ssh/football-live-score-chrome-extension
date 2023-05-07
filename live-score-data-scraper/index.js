@@ -1,21 +1,20 @@
 const express = require('express');
 const puppeteer = require('puppeteer-extra')
 const StealthPlugin = require('puppeteer-extra-plugin-stealth')
+const puppetCfg = { headless: 'new',executablePath: '/usr/bin/google-chrome', args: ['--no-sandbox', '--disable-setuid-sandbox']}
 puppeteer.use(StealthPlugin())
 
 const cors = require('cors');
-// const scrapeData = require('./scrape');
 const path = require("path");
 const app = express();
 app.use(cors());
 
-app.use(express.static(path.join(__dirname, "public")));
 app.get("/get-data", async (req, res) => {
-    puppeteer.launch({ headless: 'new' }).then(async browser => {
+    puppeteer.launch({headless: 'new'}).then(async browser => {
+        const date = new Date()
         const page = await browser.newPage();
-        await page.goto('https://www.goal.com/en/fixtures/2023-05-06');
-        // await page.screenshot({ path: 'testresult.png', fullPage: true })
-        await page.waitForSelector('.competition_name__YEMb_')
+        await page.goto(`https://www.goal.com/en/fixtures/${date.toISOString().split('T')[0]}`);
+        await page.waitForSelector('.competition_name__YEMb_');
         const data = await page.evaluate(()=>
                 Array.from(document.querySelectorAll('.competition_competition__s2ULZ'), e => ({
                     league: e.querySelector('.competition_name__YEMb_').innerText.split(' - ')[1],
@@ -31,8 +30,8 @@ app.get("/get-data", async (req, res) => {
                         away_score: e.querySelector('.result_score__Dh4zx .result_team-b__SPZhO')?.innerText,
                     }))
                 }))
-            )
-        res.json(data)
+            );
+        res.json(data);
         await browser.close();
     })
   });
