@@ -2,25 +2,44 @@
 <header>
     <title>Live Scores</title>
     <style>
-       html,body
-        {
+        html,
+        body {
             margin: 0px;
             padding: 0px;
-            overflow-x: hidden; 
+            overflow-x: hidden;
         }
-        .match-box{
-            height: 5em; 
-            background-color: black; 
-            margin-top: 0.5em; 
+
+        .main::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        .main::-webkit-scrollbar-track {
+            background: #676767;
+        }
+        .main::-webkit-scrollbar-thumb {
+            background-color: #2f2f2f;
+            border-radius: 10px;
+            border: 2px solid rgba(0, 0, 0, 0);
+            background-clip: content-box;
+            min-width: 32px;
+            min-height: 32px;
+        }
+
+        .match-box {
+            height: 5em;
+            background-color: black;
+            margin-top: 0.5em;
             border-radius: 4px;
         }
-        .label{
+
+        .label {
             color: white;
             font-weight: bold;
             display: block;
             text-decoration: none;
         }
-        #more-button{
+
+        #more-button {
             width: 100%;
             margin-top: 4px;
             border: none;
@@ -29,16 +48,19 @@
             color: rgb(214, 214, 214);
             font-weight: bold;
         }
-        #more-button:hover{
+
+        #more-button:hover {
             background-color: rgb(182, 181, 181);
             color: rgb(123, 123, 123);
             transition-duration: 200ms;
         }
     </style>
 </header>
+
 <body style="background-color: rgb(58, 58, 58); border: none;">
     <div class="main" style="width: 20em;height: 30em; padding: 8px; overflow-y: scroll;">
-        <h2 class="label" style="margin-top: 0;">Football Matches Today</h2>
+        <h2 class="label" style="margin-top: 0; margin-bottom: 0;">Football Matches Today</h2>
+        <p style="color: rgb(169, 169, 169); font-size: 10px; margin-top: 0;">original data from <a href="https://www.goal.com" style="color: rgb(229, 227, 227); text-decoration: none;" >goal.com</a></p>
         <div id="league-panel"></div>
         <button id="more-button">More</button>
     </div>
