@@ -1,3 +1,4 @@
+var moment = require('moment'); // require
 const express = require('express');
 const puppeteer = require('puppeteer-extra')
 const StealthPlugin = require('puppeteer-extra-plugin-stealth')
@@ -13,9 +14,9 @@ app.use(cors());
 
 app.get("/get-data", async (req, res) => {
     puppeteer.launch(puppetCfg).then(async browser => {
-        const date = new Date()
+        const date = moment().format('YYYY-MM-DD')
         const page = await browser.newPage();
-        await page.goto(`https://www.goal.com/en/fixtures/${date.toISOString().split('T')[0]}`);
+        await page.goto(`https://www.goal.com/en/fixtures/${date}`);
         await page.waitForSelector('.competition_name__YEMb_');
         const data = await page.evaluate(() =>
             Array.from(document.querySelectorAll('.competition_competition__s2ULZ'), e => ({
@@ -38,5 +39,4 @@ app.get("/get-data", async (req, res) => {
         await browser.close();
     })
 });
-
 app.listen(5000);
