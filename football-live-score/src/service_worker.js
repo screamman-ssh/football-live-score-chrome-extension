@@ -15,15 +15,29 @@ const fecthData = async () => {
   return preload;
 }
 
+chrome.runtime.onStartup.addListener(function () {
+  //fetch data when browser has been open
+  fecthData().then(res => {
+    if (res) {
+      console.log("pre-fetch");
+      chrome.action.setBadgeText({ text: '...' });
+      chrome.action.setBadgeBackgroundColor({ color: '#FF4F4F', })
+    }
+  })
+})
+
 //handle event message from popup.js
 chrome.runtime.onMessage.addListener(
   function (request, sender, sendResponse) {
-    if (request.data === "get") {
-      chrome.storage.local.get(["data"]).then( data =>{ 
+    if (request.popup == "open") {
+      chrome.action.setBadgeText({ text: '' });
+    }
+    else if (request.data === "get") {
+      chrome.storage.local.get(["data"]).then(data => {
         sendResponse(data)
       })
     }
-    else if(request.data === "refetch"){  
+    else if (request.data === "refetch") {
       //annonymous function for refetch data
       // (async () => {
       //   const data = await fecthData();

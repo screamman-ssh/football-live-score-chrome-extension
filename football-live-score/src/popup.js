@@ -6,6 +6,7 @@ var offset = 20;
 const chromeMsg = {
     getChromeLocalData: async () => chrome.runtime.sendMessage({data: "get"}).then(res => res.data),
     refetchChromeLocalData: async () => await chrome.runtime.sendMessage({data: "refetch"}),
+    popupOpened: () => chrome.runtime.sendMessage({popup: "open"})
 }
 
 //More button handler, increase data offset
@@ -56,6 +57,7 @@ const loadingLabel = () => {
 }
 
 window.onload = async function () {
+    chromeMsg.popupOpened();
     const dataObj = await chromeMsg.getChromeLocalData();
     if (dataObj) {
         leaguePanel.innerHTML = leagueBox(dataObj.data.slice(0, offset));
