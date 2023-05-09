@@ -2,11 +2,13 @@ const moreButton = document.getElementById('more-button');
 var leaguePanel = document.getElementById('league-panel');
 var offset = 20;
 
+//chrome message passing object
 const chromeMsg = {
-    getChromeLocalData: async () => await chrome.runtime.sendMessage({data: "get"}).then(res => res.data),
-    refetchChromeLocalData: async () => await chrome.runtime.sendMessage({data: "refetch"}).then(res => res.data),
+    getChromeLocalData: async () => chrome.runtime.sendMessage({data: "get"}).then(res => res.data),
+    refetchChromeLocalData: async () => await chrome.runtime.sendMessage({data: "refetch"}),
 }
 
+//More button handler, increase data offset
 moreButton.addEventListener('click', async function () {
     const getData = await chromeMsg.getChromeLocalData();
     leaguePanel.innerHTML += leagueBox(getData.data.slice(offset, offset + 10));
@@ -54,22 +56,23 @@ const loadingLabel = () => {
 }
 
 window.onload = async function () {
-    const d = new Date();
-    if (await chromeMsg.getChromeLocalData()) {
-        const dataObj = await chromeMsg.getChromeLocalData();
+    const dataObj = await chromeMsg.getChromeLocalData();
+    if (dataObj) {
         leaguePanel.innerHTML = leagueBox(dataObj.data.slice(0, offset));
         //refetch data if the last fetch data are older than 30 second
         if ((new Date() - new Date(dataObj.timestamp)) > 30000)
             leaguePanel.innerHTML = leagueBox((await chromeMsg.refetchChromeLocalData()).data.slice(0, offset));
     } else {
+        console.log('new fetch')
         leaguePanel.innerHTML = loadingLabel()
         var newData = await chromeMsg.refetchChromeLocalData()
-        leaguePanel.innerHTML = leagueBox(newData.slice(0, offset))
+        leaguePanel.innerHTML = leagueBox(newData.data.slice(0, offset))
     }
 }
 
+//refetch data every 1 minute
 setInterval(async function () {
     const data = await chromeMsg.refetchChromeLocalData()
-    // console.log("refetch")
+    console.log("refetch")
     leaguePanel.innerHTML = leagueBox(data.data)
 }, 60000)
