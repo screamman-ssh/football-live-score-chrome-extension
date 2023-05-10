@@ -7,7 +7,7 @@
 
 //fetch data from scraper api
 const fecthData = async (targetDate) => {
-  var data = await fetch('http://localhost:5000/get-data', {
+  var data = await fetch('http://localhost:4231/get-data', {
     method: "POST",
     body: JSON.stringify({
       date: targetDate
