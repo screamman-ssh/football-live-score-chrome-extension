@@ -10,6 +10,9 @@ export class dateSelector {
     backDate(){
         this.date.setDate(this.date.getDate() - 1);
     }
+    getDateDif(){
+        return this.currentDate.getDate() - this.date.getDate()
+    }
     getCurrentDate(){
         this.currentDate = new Date();
         return this.currentDate;

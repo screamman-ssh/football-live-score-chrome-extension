@@ -14,9 +14,9 @@ app.use(cors());
 app.use(express.json());
 
 app.post("/get-data", async (req, res) => {
-    console.log(req.body)
+    const date = req.body.date
     puppeteer.launch(puppetCfg).then(async browser => {
-        const date = moment().format('YYYY-MM-DD')
+        // console.log(date)
         const page = await browser.newPage();
         await page.goto(`https://www.goal.com/en/fixtures/${date}`);
         await page.waitForSelector('.competition_name__YEMb_');

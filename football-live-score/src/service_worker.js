@@ -6,21 +6,17 @@
 // });
 
 //fetch data from scraper api
-const fecthData = async () => {
-  var data = await fetch('http://localhost:5000/get-data',{
+const fecthData = async (targetDate) => {
+  var data = await fetch('http://localhost:5000/get-data', {
     method: "POST",
     body: JSON.stringify({
-      date: new Date()
+      date: targetDate
     }),
     headers: {
       "Content-type": "application/json; charset=UTF-8"
     }
   }).then((res) => res.json());
-  const preload = { data: data, timestamp: Date.now() }
-  chrome.storage.local.set({ "data": preload }).then(() => {
-    console.log("Value is set to storage");
-  });
-  return preload;
+  return data;
 }
 
 chrome.runtime.onStartup.addListener(function () {
@@ -37,7 +33,6 @@ chrome.runtime.onStartup.addListener(function () {
 //handle event message from popup.js
 chrome.runtime.onMessage.addListener(
   function (request, sender, sendResponse) {
-    // console.log(request)
     if (request.popup == "open") {
       chrome.action.setBadgeText({ text: '' });
     }
@@ -53,14 +48,41 @@ chrome.runtime.onMessage.addListener(
       //   console.log(new Date(data.timestamp))
       //   sendResponse(data)
       // })();
-      fecthData().then(res => {
-        console.log("refetch")
-        sendResponse(res)
+      var curDate = new Date();
+      curDate = curDate.toISOString().split("T")[0];
+      fecthData(curDate).then(res => {
+        const preload = { data: res, timestamp: Date.now() }
+        chrome.storage.local.set({ "data": preload }).then(() => {
+          console.log("Value is set to storage");
+        });
+        sendResponse(preload)
       })
     }
     else if (request.data == "fatch-date") {
-      console.log(request.date);
-      sendResponse("Recieve");
+      // console.log(request.date);
+      var targetDate = request.date;
+      chrome.storage.session.get(null, function(items) {
+        var allKeys = Object.keys(items);
+        // console.log(allKeys);
+        //check if data has been load before, prevent wasting time load stored data
+        if(allKeys.includes(targetDate)){
+          chrome.storage.session.get(targetDate).then(res =>{
+            sendResponse(res)
+          })
+        }
+        else{
+          console.log("There no data");
+          fecthData(targetDate).then(res => {
+            // console.log(res)
+            var preload = {};                   //create object to each date as a preload
+            preload[targetDate] = res;
+            chrome.storage.session.set(preload).then(() => {
+              console.log(targetDate + " data is set to storage")
+            })
+            sendResponse(preload)
+          })
+        }
+    });
     }
     return true
   }

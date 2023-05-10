@@ -10,7 +10,7 @@ var offset = 20;
 const chromeMsg = {
     getChromeLocalData: async () => chrome.runtime.sendMessage({data: "get"}).then(res => res.data),
     refetchChromeLocalData: async () => await chrome.runtime.sendMessage({data: "refetch"}),
-    fetchWithDate: async (targetDate) => await chrome.runtime.sendMessage({data: "fatch-date", date: targetDate}),
+    fetchWithDate: async (targetDate) => chrome.runtime.sendMessage({data: "fatch-date", date: targetDate}).then(res => res[targetDate]),
     popupOpened: () => chrome.runtime.sendMessage({popup: "open"})
 }
 
@@ -25,15 +25,32 @@ moreButton.addEventListener('click', async function () {
 const dateSel = new dateSelector()
 const handleDateSelector = async (event, side) => {
     event.preventDefault()
+    //set maximum matchday to fetch, avoiding web blocking and session storage spcae full
     if(side == "left")
         dateSel.backDate();
     else if(side == "right")
         dateSel.nextDate();
+
+    if(dateSel.getDateDif() >= 3 || dateSel.getDateDif() <= -3){
+        console.log("maximum");
+        window.open(`https://www.goal.com/en/fixtures/${dateSel.getDateISO()}`)
+        return
+    }
+
     var displayDate = document.getElementById('display-date');
     displayDate.innerText = dateSel.getDateStr();
-    var targetDate = dateSel.getDateISO()
-    const dataOnTargetDate = await chromeMsg.fetchWithDate(targetDate);
-    console.log(dataOnTargetDate)
+    if(dateSel.getDateStr() == "Today"){
+        const data = await chromeMsg.getChromeLocalData()
+        console.log("get today data")
+        leaguePanel.innerHTML = leagueBox(data.data)
+    }
+    else{
+        var targetDate = dateSel.getDateISO()
+        leaguePanel.innerHTML = loadingLabel()
+        const dataOnTargetDate = await chromeMsg.fetchWithDate(targetDate);
+        console.log(dataOnTargetDate)
+        leaguePanel.innerHTML = leagueBox(dataOnTargetDate)
+    }
 }
 arrowLeft.addEventListener('click',  (event) => handleDateSelector(event, "left"));
 arrowRight.addEventListener('click', (event) => handleDateSelector(event, "right"));
@@ -99,7 +116,9 @@ window.onload = async function () {
 
 //refetch data every 1 minute
 setInterval(async function () {
-    const data = await chromeMsg.refetchChromeLocalData()
-    console.log("refetch")
-    leaguePanel.innerHTML = leagueBox(data.data)
+    if(dateSel.getDateStr() == "Today"){
+        const data = await chromeMsg.refetchChromeLocalData()
+        console.log("refetch")
+        leaguePanel.innerHTML = leagueBox(data.data)
+    }
 }, 60000)
