@@ -1,4 +1,6 @@
 const moreButton = document.getElementById('more-button');
+const arrowRight = document.getElementById('arrow-right');
+const arrowLeft = document.getElementById('arrow-left');
 var leaguePanel = document.getElementById('league-panel');
 var offset = 20;
 
@@ -15,6 +17,27 @@ moreButton.addEventListener('click', async function () {
     leaguePanel.innerHTML += leagueBox(getData.data.slice(offset, offset + 10));
     offset += 10;
 });
+
+//date arrow selector
+var date = new Date();
+const dateSelector = (event, side) => {
+    event.preventDefault()
+    var strDate = "";
+    var displayDate = document.getElementById('display-date');
+    //verify which button is press and add or substract day using setDate -> auto set correct month and year
+    if (side == "left"){
+        date.setDate(date.getDate() - 1);
+    } else if (side== "right"){
+        date.setDate(date.getDate() + 1);
+    }
+    //check if date is today
+    var today = new Date()
+    today = today.toISOString().split("T")[0]
+    strDate = (today == date.toISOString().split("T")[0]) ? "Today" : (date.toString().split(" ").slice(0, 3)).toString().replaceAll(",", " ");
+    displayDate.innerText = strDate;
+}
+arrowLeft.addEventListener('click',  (event) => dateSelector(event, "left"));
+arrowRight.addEventListener('click', (event) => dateSelector(event, "right"));
 
 const leagueBox = (data) => {
     return data.map((d) => {
@@ -57,6 +80,8 @@ const loadingLabel = () => {
 }
 
 window.onload = async function () {
+    // var d = new Date()
+    // console.log(new Date(d.setDate(d.getDate() - 12)))
     chromeMsg.popupOpened();
     const dataObj = await chromeMsg.getChromeLocalData();
     if (dataObj) {
@@ -65,6 +90,7 @@ window.onload = async function () {
         if ((new Date() - new Date(dataObj.timestamp)) > 30000)
             leaguePanel.innerHTML = leagueBox((await chromeMsg.refetchChromeLocalData()).data.slice(0, offset));
     } else {
+        //if there data before, start new fetch with loading screen
         console.log('new fetch')
         leaguePanel.innerHTML = loadingLabel()
         var newData = await chromeMsg.refetchChromeLocalData()

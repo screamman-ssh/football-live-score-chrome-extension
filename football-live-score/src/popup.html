@@ -54,13 +54,44 @@
             color: rgb(123, 123, 123);
             transition-duration: 200ms;
         }
+        .arrow-right {
+            width: 0; 
+            background: transparent;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            border-right: 0px transparent;
+            border-left: 18px solid #676767;
+        }
+        .arrow-left {
+            width: 0; 
+            background: transparent;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            border-right: 18px solid #676767;
+            border-left: 0px transparent;
+        }
     </style>
 </header>
 
 <body style="background-color: rgb(58, 58, 58); border: none;">
     <div class="main" style="width: 20em;height: 30em; padding: 8px; overflow-y: scroll;">
-        <h2 class="label" style="margin-top: 0; margin-bottom: 0;">Football Matches Today</h2>
-        <p style="color: rgb(169, 169, 169); font-size: 10px; margin-top: 0;">original data from <a href="https://www.goal.com" style="color: rgb(229, 227, 227); text-decoration: none;" >goal.com</a></p>
+        <h3 class="label" style="margin-top: 0; margin-bottom: 0; text-align: center;">Football Matches & Live Score</h3>
+        <p style="color: rgb(169, 169, 169); font-size: 10px; margin-top: 0; text-align: center;">original data from <a href="https://www.goal.com" style="color: rgb(229, 227, 227); text-decoration: none;" >goal.com</a></p>
+        <div class="date-selector">
+            <table style="width: 100%; height: 1em;">
+                <tr>
+                    <td style="width: 12%; text-align: center;">
+                        <button class="arrow-left" id="arrow-left"></button>
+                    </td>
+                    <td style="width: 76%; text-align: center;">
+                        <p class="label" id="display-date" style="font-size: 15px; margin: 0;">Today</p>
+                    </td>
+                    <td style="width: 12%; text-align: center;">
+                        <button class="arrow-right" id="arrow-right"></button>
+                    </td>
+                </tr>
+            </table>
+        </div>
         <div id="league-panel"></div>
         <button id="more-button">More</button>
     </div>
