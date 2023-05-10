@@ -1,4 +1,5 @@
 import { dateSelector } from "./dateSelector.js";
+const dateSel = new dateSelector()
 
 const moreButton = document.getElementById('more-button');
 const arrowRight = document.getElementById('arrow-right');
@@ -16,21 +17,27 @@ const chromeMsg = {
 
 //More button handler, increase data offset
 moreButton.addEventListener('click', async function () {
-    const getData = await chromeMsg.getChromeLocalData();
-    leaguePanel.innerHTML += leagueBox(getData.data.slice(offset, offset + 10));
+    if(dateSel.getDateStr() == "Today"){
+        const getData = await chromeMsg.getChromeLocalData();
+        leaguePanel.innerHTML += leagueBox(getData.data.slice(offset, offset + 10));
+    }
+    else{
+        var targetDate = dateSel.getDateISO()
+        const dataOnTargetDate = await chromeMsg.fetchWithDate(targetDate);
+        leaguePanel.innerHTML = leagueBox(dataOnTargetDate.slice(offset, offset + 10))
+    }
     offset += 10;
 });
 
 //date arrow date selector
-const dateSel = new dateSelector()
 const handleDateSelector = async (event, side) => {
     event.preventDefault()
-    //set maximum matchday to fetch, avoiding web blocking and session storage spcae full
     if(side == "left")
         dateSel.backDate();
     else if(side == "right")
         dateSel.nextDate();
 
+    //set maximum matchday to fetch, avoiding web blocking and session storage's space full
     if(dateSel.getDateDif() >= 3 || dateSel.getDateDif() <= -3){
         console.log("maximum");
         window.open(`https://www.goal.com/en/fixtures/${dateSel.getDateISO()}`)
@@ -41,15 +48,13 @@ const handleDateSelector = async (event, side) => {
     displayDate.innerText = dateSel.getDateStr();
     if(dateSel.getDateStr() == "Today"){
         const data = await chromeMsg.getChromeLocalData()
-        console.log("get today data")
-        leaguePanel.innerHTML = leagueBox(data.data)
+        leaguePanel.innerHTML = leagueBox(data.data.slice(0, offset))
     }
     else{
         var targetDate = dateSel.getDateISO()
         leaguePanel.innerHTML = loadingLabel()
         const dataOnTargetDate = await chromeMsg.fetchWithDate(targetDate);
-        console.log(dataOnTargetDate)
-        leaguePanel.innerHTML = leagueBox(dataOnTargetDate)
+        leaguePanel.innerHTML = leagueBox(dataOnTargetDate.slice(0, offset))
     }
 }
 arrowLeft.addEventListener('click',  (event) => handleDateSelector(event, "left"));
@@ -119,6 +124,6 @@ setInterval(async function () {
     if(dateSel.getDateStr() == "Today"){
         const data = await chromeMsg.refetchChromeLocalData()
         console.log("refetch")
-        leaguePanel.innerHTML = leagueBox(data.data)
+        leaguePanel.innerHTML = leagueBox(data.data.slice(0, offset))
     }
 }, 60000)
