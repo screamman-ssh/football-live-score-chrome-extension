@@ -1,3 +1,5 @@
+import { dateSelector } from "./dateSelector.js";
+
 const moreButton = document.getElementById('more-button');
 const arrowRight = document.getElementById('arrow-right');
 const arrowLeft = document.getElementById('arrow-left');
@@ -8,6 +10,7 @@ var offset = 20;
 const chromeMsg = {
     getChromeLocalData: async () => chrome.runtime.sendMessage({data: "get"}).then(res => res.data),
     refetchChromeLocalData: async () => await chrome.runtime.sendMessage({data: "refetch"}),
+    fetchWithDate: async (targetDate) => await chrome.runtime.sendMessage({data: "fatch-date", date: targetDate}),
     popupOpened: () => chrome.runtime.sendMessage({popup: "open"})
 }
 
@@ -18,26 +21,22 @@ moreButton.addEventListener('click', async function () {
     offset += 10;
 });
 
-//date arrow selector
-var date = new Date();
-const dateSelector = (event, side) => {
+//date arrow date selector
+const dateSel = new dateSelector()
+const handleDateSelector = async (event, side) => {
     event.preventDefault()
-    var strDate = "";
+    if(side == "left")
+        dateSel.backDate();
+    else if(side == "right")
+        dateSel.nextDate();
     var displayDate = document.getElementById('display-date');
-    //verify which button is press and add or substract day using setDate -> auto set correct month and year
-    if (side == "left"){
-        date.setDate(date.getDate() - 1);
-    } else if (side== "right"){
-        date.setDate(date.getDate() + 1);
-    }
-    //check if date is today
-    var today = new Date()
-    today = today.toISOString().split("T")[0]
-    strDate = (today == date.toISOString().split("T")[0]) ? "Today" : (date.toString().split(" ").slice(0, 3)).toString().replaceAll(",", " ");
-    displayDate.innerText = strDate;
+    displayDate.innerText = dateSel.getDateStr();
+    var targetDate = dateSel.getDateISO()
+    const dataOnTargetDate = await chromeMsg.fetchWithDate(targetDate);
+    console.log(dataOnTargetDate)
 }
-arrowLeft.addEventListener('click',  (event) => dateSelector(event, "left"));
-arrowRight.addEventListener('click', (event) => dateSelector(event, "right"));
+arrowLeft.addEventListener('click',  (event) => handleDateSelector(event, "left"));
+arrowRight.addEventListener('click', (event) => handleDateSelector(event, "right"));
 
 const leagueBox = (data) => {
     return data.map((d) => {

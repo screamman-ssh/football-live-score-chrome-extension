@@ -11,8 +11,10 @@ const cors = require('cors');
 const path = require("path");
 const app = express();
 app.use(cors());
+app.use(express.json());
 
-app.get("/get-data", async (req, res) => {
+app.post("/get-data", async (req, res) => {
+    console.log(req.body)
     puppeteer.launch(puppetCfg).then(async browser => {
         const date = moment().format('YYYY-MM-DD')
         const page = await browser.newPage();

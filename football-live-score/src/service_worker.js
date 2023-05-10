@@ -7,7 +7,15 @@
 
 //fetch data from scraper api
 const fecthData = async () => {
-  var data = await fetch('http://localhost:4231/get-data').then((res) => res.json());
+  var data = await fetch('http://localhost:5000/get-data',{
+    method: "POST",
+    body: JSON.stringify({
+      date: new Date()
+    }),
+    headers: {
+      "Content-type": "application/json; charset=UTF-8"
+    }
+  }).then((res) => res.json());
   const preload = { data: data, timestamp: Date.now() }
   chrome.storage.local.set({ "data": preload }).then(() => {
     console.log("Value is set to storage");
@@ -29,6 +37,7 @@ chrome.runtime.onStartup.addListener(function () {
 //handle event message from popup.js
 chrome.runtime.onMessage.addListener(
   function (request, sender, sendResponse) {
+    // console.log(request)
     if (request.popup == "open") {
       chrome.action.setBadgeText({ text: '' });
     }
@@ -48,6 +57,10 @@ chrome.runtime.onMessage.addListener(
         console.log("refetch")
         sendResponse(res)
       })
+    }
+    else if (request.data == "fatch-date") {
+      console.log(request.date);
+      sendResponse("Recieve");
     }
     return true
   }
