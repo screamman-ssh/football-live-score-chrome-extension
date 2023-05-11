@@ -2,16 +2,34 @@ import { dateSelector } from "./dateSelector.js";
 const dateSel = new dateSelector()
 
 const moreButton = document.getElementById('more-button');
-const arrowRight = document.getElementById('arrow-right');
-const arrowLeft = document.getElementById('arrow-left');
 var leaguePanel = document.getElementById('league-panel');
 var offset = 20;
 
+const arrowRight = document.getElementById('arrow-right');
+const arrowLeft = document.getElementById('arrow-left');
+const arrowsAvailable = (available) => {
+    if(available){
+        arrowLeft.disabled = false;
+        arrowRight.disabled = false;
+    }else{
+        arrowLeft.disabled = true;
+        arrowRight.disabled = true;
+    }
+}
 //chrome message passing object
 const chromeMsg = {
-    getChromeLocalData: async () => chrome.runtime.sendMessage({data: "get"}).then(res => res.data),
-    refetchChromeLocalData: async () => await chrome.runtime.sendMessage({data: "refetch"}),
-    fetchWithDate: async (targetDate) => chrome.runtime.sendMessage({data: "fatch-date", date: targetDate}).then(res => res[targetDate]),
+    getChromeLocalData: async () => chrome.runtime.sendMessage({data: "get"}).then(res => {
+        arrowsAvailable(1);
+        return res.data;
+    }),
+    refetchChromeLocalData: async () => chrome.runtime.sendMessage({data: "refetch"}).then(res => {
+        arrowsAvailable(1);
+        return res
+    }),
+    fetchWithDate: async (targetDate) => chrome.runtime.sendMessage({data: "fatch-date", date: targetDate}).then(res => {
+        arrowsAvailable(1)
+        return res[targetDate]
+    }),
     popupOpened: () => chrome.runtime.sendMessage({popup: "open"})
 }
 
@@ -32,6 +50,7 @@ moreButton.addEventListener('click', async function () {
 //date arrow date selector
 const handleDateSelector = async (event, side) => {
     event.preventDefault()
+    arrowsAvailable(0);
     if(side == "left")
         dateSel.backDate();
     else if(side == "right")
@@ -108,11 +127,15 @@ window.onload = async function () {
     if (dataObj) {
         leaguePanel.innerHTML = leagueBox(dataObj.data.slice(0, offset));
         //refetch data if the last fetch data are older than 30 second
-        if ((new Date() - new Date(dataObj.timestamp)) > 30000)
+        if ((new Date() - new Date(dataObj.timestamp)) > 30000){
+            arrowsAvailable(0);
             leaguePanel.innerHTML = leagueBox((await chromeMsg.refetchChromeLocalData()).data.slice(0, offset));
+        }
+           
     } else {
         //if there data before, start new fetch with loading screen
         console.log('new fetch')
+        arrowsAvailable(0);
         leaguePanel.innerHTML = loadingLabel()
         var newData = await chromeMsg.refetchChromeLocalData()
         leaguePanel.innerHTML = leagueBox(newData.data.slice(0, offset))
@@ -122,6 +145,7 @@ window.onload = async function () {
 //refetch data every 1 minute
 setInterval(async function () {
     if(dateSel.getDateStr() == "Today"){
+        arrowsAvailable(0);
         const data = await chromeMsg.refetchChromeLocalData()
         console.log("refetch")
         leaguePanel.innerHTML = leagueBox(data.data.slice(0, offset))

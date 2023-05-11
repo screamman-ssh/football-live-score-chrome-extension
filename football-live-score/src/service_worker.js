@@ -61,16 +61,16 @@ chrome.runtime.onMessage.addListener(
     else if (request.data == "fatch-date") {
       // console.log(request.date);
       var targetDate = request.date;
-      chrome.storage.session.get(null, function(items) {
+      chrome.storage.session.get(null, function (items) {
         var allKeys = Object.keys(items);
         // console.log(allKeys);
         //check if data has been load before, prevent wasting time load stored data
-        if(allKeys.includes(targetDate)){
-          chrome.storage.session.get(targetDate).then(res =>{
+        if (allKeys.includes(targetDate)) {
+          chrome.storage.session.get(targetDate).then(res => {
             sendResponse(res)
           })
         }
-        else{
+        else {
           console.log("There no data");
           fecthData(targetDate).then(res => {
             // console.log(res)
@@ -82,7 +82,7 @@ chrome.runtime.onMessage.addListener(
             sendResponse(preload)
           })
         }
-    });
+      });
     }
     return true
   }
