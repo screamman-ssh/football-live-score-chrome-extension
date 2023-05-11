@@ -1,6 +1,6 @@
 {
     "manifest_version": 3,
-    "name": "Live Scores",
+    "name": "Football Live Score",
     "description": "Organizes your Chrome extension and Chrome Web store documentation tabs.",
     "version": "1.0",
     "icons": {

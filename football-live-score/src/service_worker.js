@@ -21,7 +21,9 @@ const fecthData = async (targetDate) => {
 
 chrome.runtime.onStartup.addListener(function () {
   //fetch data when browser has been open
-  fecthData().then(res => {
+  var curDate = new Date();
+  curDate = curDate.toISOString().split("T")[0];
+  fecthData(curDate).then(res => {
     if (res) {
       console.log("pre-fetch");
       chrome.action.setBadgeText({ text: '...' });
