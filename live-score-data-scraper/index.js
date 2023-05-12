@@ -1,4 +1,3 @@
-var moment = require('moment'); // require
 const express = require('express');
 const puppeteer = require('puppeteer-extra')
 const StealthPlugin = require('puppeteer-extra-plugin-stealth')

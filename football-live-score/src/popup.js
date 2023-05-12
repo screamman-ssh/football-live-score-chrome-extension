@@ -7,6 +7,7 @@ var offset = 20;
 
 const arrowRight = document.getElementById('arrow-right');
 const arrowLeft = document.getElementById('arrow-left');
+//disable and enable arrow button for waiting data
 const arrowsAvailable = (available) => {
     if(available){
         arrowLeft.disabled = false;
@@ -120,7 +121,8 @@ const loadingLabel = () => {
 }
 
 window.onload = async function () {
-    // var d = new Date()
+    var d = new Date()
+    console.log(d.toLocaleDateString("en-CA"))
     // console.log(new Date(d.setDate(d.getDate() - 12)))
     chromeMsg.popupOpened();
     const dataObj = await chromeMsg.getChromeLocalData();

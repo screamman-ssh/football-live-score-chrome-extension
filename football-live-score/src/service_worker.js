@@ -1,9 +1,3 @@
-// chrome.runtime.onInstalled.addListener(() => {
-//   chrome.action.setBadgeText({
-//     text: "!",
-//   });
-
-// });
 
 //fetch data from scraper api
 const fecthData = async (targetDate) => {
@@ -22,7 +16,7 @@ const fecthData = async (targetDate) => {
 chrome.runtime.onStartup.addListener(function () {
   //fetch data when browser has been open
   var curDate = new Date();
-  curDate = curDate.toISOString().split("T")[0];
+  curDate = curDate.toLocaleDateString("en-CA");
   fecthData(curDate).then(res => {
     if (res) {
       console.log("pre-fetch");
@@ -51,7 +45,7 @@ chrome.runtime.onMessage.addListener(
       //   sendResponse(data)
       // })();
       var curDate = new Date();
-      curDate = curDate.toISOString().split("T")[0];
+      curDate = curDate.toLocaleDateString("en-CA");
       fecthData(curDate).then(res => {
         const preload = { data: res, timestamp: Date.now() }
         chrome.storage.local.set({ "data": preload }).then(() => {

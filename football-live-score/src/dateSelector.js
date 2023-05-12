@@ -21,11 +21,11 @@ export class dateSelector {
         return this.date;
     }
     getDateISO() {
-        return this.date.toISOString().split("T")[0];
+        return this.date.toLocaleDateString("en-CA");
     }
     getDateStr() {
-        var targetDate = this.date.toISOString().split("T")[0];
-        var date = this.currentDate.toISOString().split("T")[0];
+        var targetDate = this.date.toLocaleDateString("en-CA");
+        var date = this.currentDate.toLocaleDateString("en-CA");
         //check if date is today
         var strDate = (date == targetDate) ? "Today" : (this.date.toString().split(" ").slice(0, 3)).toString().replaceAll(",", " ");
         return strDate;
