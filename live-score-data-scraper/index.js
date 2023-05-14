@@ -25,7 +25,7 @@ app.post("/get-data", async (req, res) => {
                 league_link: e.querySelector('.competition_name__YEMb_').href,
                 league_logo: e.querySelector('.competition_logo-wrapper__WNYqb .competition_logo__1QOg2').getAttribute('src'),
                 match: Array.from(e.querySelectorAll('.row_row__UQmGm'), e => ({
-                    match_link: e.href,
+                    match_link: e.querySelector('a').href,
                     time: e.querySelector('.start-date_start-date__ggx17') ? e.querySelector('.start-date_start-date__ggx17').innerText : e.querySelector('.period_period__OUtPk') ? e.querySelector('.period_period__OUtPk').innerText : e.querySelector('.full-time_full-time__RAWhq') ? "FT" : "HT",
                     home: e.querySelector('.team_team___lVK_.team_team-a__2YS_9 .name_name__YzgHa').innerText,
                     home_logo: e.querySelector('.team_team___lVK_.team_team-a__2YS_9 .crest_crest__CNBqh').getAttribute('src'),

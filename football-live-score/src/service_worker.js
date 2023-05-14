@@ -19,7 +19,6 @@ chrome.runtime.onStartup.addListener(function () {
   curDate = curDate.toLocaleDateString("en-CA");
   fecthData(curDate).then(res => {
     if (res) {
-      console.log("pre-fetch");
       chrome.action.setBadgeText({ text: '...' });
       chrome.action.setBadgeBackgroundColor({ color: '#FF4F4F', })
     }
@@ -49,13 +48,12 @@ chrome.runtime.onMessage.addListener(
       fecthData(curDate).then(res => {
         const preload = { data: res, timestamp: Date.now() }
         chrome.storage.local.set({ "data": preload }).then(() => {
-          console.log("Value is set to storage");
+          // console.log(curDate + " data is set to storage");
+          sendResponse(preload)
         });
-        sendResponse(preload)
       })
     }
     else if (request.data == "fatch-date") {
-      // console.log(request.date);
       var targetDate = request.date;
       chrome.storage.session.get(null, function (items) {
         var allKeys = Object.keys(items);
@@ -73,9 +71,9 @@ chrome.runtime.onMessage.addListener(
             var preload = {};                   //create object to each date as a preload
             preload[targetDate] = res;
             chrome.storage.session.set(preload).then(() => {
-              console.log(targetDate + " data is set to storage")
+              // console.log(targetDate + " data is set to storage")
+              sendResponse(preload)
             })
-            sendResponse(preload)
           })
         }
       });

@@ -59,7 +59,7 @@ const handleDateSelector = async (event, side) => {
 
     //set maximum matchday to fetch, avoiding web blocking and session storage's space full
     if(dateSel.getDateDif() >= 3 || dateSel.getDateDif() <= -3){
-        console.log("maximum");
+        // console.log("maximum");
         window.open(`https://www.goal.com/en/fixtures/${dateSel.getDateISO()}`)
         return
     }
@@ -122,8 +122,6 @@ const loadingLabel = () => {
 
 window.onload = async function () {
     var d = new Date()
-    console.log(d.toLocaleDateString("en-CA"))
-    // console.log(new Date(d.setDate(d.getDate() - 12)))
     chromeMsg.popupOpened();
     const dataObj = await chromeMsg.getChromeLocalData();
     if (dataObj) {
@@ -136,7 +134,7 @@ window.onload = async function () {
            
     } else {
         //if there data before, start new fetch with loading screen
-        console.log('new fetch')
+        // console.log('new fetch')
         arrowsAvailable(0);
         leaguePanel.innerHTML = loadingLabel()
         var newData = await chromeMsg.refetchChromeLocalData()
@@ -144,12 +142,11 @@ window.onload = async function () {
     }
 }
 
-//refetch data every 1 minute
-setInterval(async function () {
-    if(dateSel.getDateStr() == "Today"){
-        arrowsAvailable(0);
-        const data = await chromeMsg.refetchChromeLocalData()
-        console.log("refetch")
-        leaguePanel.innerHTML = leagueBox(data.data.slice(0, offset))
-    }
-}, 60000)
+//refetch data every 1 
+const updateData = async () => {
+        const data = await chromeMsg.refetchChromeLocalData();
+        if(dateSel.getDateStr() == "Today"){
+            leaguePanel.innerHTML = leagueBox(data.data.slice(0, offset));
+        }
+}
+setInterval( updateData,   60000)
