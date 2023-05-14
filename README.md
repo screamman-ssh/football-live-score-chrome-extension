@@ -1,6 +1,6 @@
 # Football Live Score (Chrome Extension)
 <div align="center">
-  <image width="650" src="https://github.com/Stormbooster-sudo/football-live-score-chrome-extension/assets/77887797/21751b44-c34c-42e1-b102-1ae6cca73449">
+  <image width="650" src="https://github.com/Stormbooster-sudo/football-live-score-chrome-extension/assets/77887797/329a6613-df99-489a-8fb0-7406282abb10">
 </div>
 
 Football Live Score is a Chrome extension that reports football match fixtures, match results, match stats and live scores. The extension is made by Manifest V3 and uses the data scrapped from <a href="https://www.goal.com" target="_blank">goal.com</a>
