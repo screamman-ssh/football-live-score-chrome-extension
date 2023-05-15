@@ -21,7 +21,13 @@ The chrome extenion is the folder *"football-live-score-chrome-extenion"*. To im
 
 Or following this video https://www.youtube.com/watch?v=hIRX1dpfqHc
 ### 3. Run backend on local
-The backend is the folder name *"football-live-score-scraper-backend"* and will be run in the container using Docker. If you have Docker on your machine you can run the bash script to run the container, using command line:
+The backend is the folder name *"football-live-score-scraper-backend"* and will be run in the container using Docker. If you have Docker on your machine you can run the bash script to run the container.<br/>
+**Before create the image and run the container** -> Make sure that timezone is correct to your local, You can set the timezone in Dockerfile inside the folder. (Default is Asia/Bangkok)
+ ```Dockerfile
+ # Set TZ environment variable
+ENV TZ Asia/Bangkok
+ ```
+  Then, create the image and run the container using command line: 
  ```
  # Make sure you working in "football-live-score-scraper-backend" directory 
  bash script.sh
